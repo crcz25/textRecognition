@@ -1,0 +1,2 @@
+# textRecognition
+Challenge for AI
