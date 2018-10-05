@@ -4,13 +4,20 @@ sudo apt-get upgrade
 #Remove any previous installations of x264</h3>
 sudo apt-get remove x264 libx264-dev
 
-#We will Install dependencies now
+sudo apt-get install build-essential cmake pkg-config
+sudo apt-get install libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+sudo apt-get install libxvidcore-dev libx264-dev
+
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+sudo apt-get install libxvidcore-dev libx264-dev
+
+sudo apt-get install libatlas-base-dev gfortran
 
 sudo apt-get install build-essential checkinstall cmake pkg-config yasm
 sudo apt-get install git gfortran
 sudo apt-get install libjpeg8-dev libjasper-dev libpng12-dev
 
-# If you are using Ubuntu 16.04
 sudo apt-get install libtiff5-dev
 
 sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev
@@ -28,3 +35,12 @@ sudo apt-get install libgoogle-glog-dev libgflags-dev
 sudo apt-get install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
 
 # OpenCV
+Compile
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D INSTALL_PYTHON_EXAMPLES=ON \
+    -D INSTALL_C_EXAMPLES=OFF \
+    -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+    -D PYTHON_EXECUTABLE=../../env/bin/python \
+    -D BUILD_EXAMPLES=ON ..
