@@ -37,26 +37,15 @@ random_X_train = X_train[np.random.choice(X_train.shape[0], rand_samples, replac
 #Get random samples from database to test
 random_X_test = X_test[np.random.choice(X_test.shape[0], rand_samples, replace=False), :]
 
-print(math.ceil(rand_samples / 2), ',' , 2)
-fig=plt.figure(figsize=(8, 6))
+print(rand_samples // 2, ',' , 2)
 
-columns = 2
-rows = math.ceil(rand_samples / 2)
-aux = 220
-for i in range(0, columns * rows):
-  fig.add_subplot(rows, columns, i + 1, )
-  #plt.subplot(aux + 1)
-  plt.imshow(random_X_train[i], cmap=plt.get_cmap('gray'))
-  print(i)
-"""
-plt.subplot(221)
-plt.imshow(random_X_train[0], cmap=plt.get_cmap('gray'))
-plt.subplot(222)
-plt.imshow(random_X_train[1], cmap=plt.get_cmap('gray'))
-plt.subplot(223)
-plt.imshow(random_X_train[2], cmap=plt.get_cmap('gray'))
-plt.subplot(224)
-plt.imshow(random_X_train[3], cmap=plt.get_cmap('gray'))
-"""
+for i in range(rand_samples):
+  plt.subplot(4, rand_samples//2, i+1)
+  plt.tight_layout()
+  plt.imshow(X_train[i], cmap='gray', interpolation='none')
+  plt.title("{}".format(Y_train[i]))
+  plt.xticks([])
+  plt.yticks([])
+
 # show the plot
 plt.show()
