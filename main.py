@@ -30,17 +30,20 @@ if args.samples:
 # Download database from MNIST to train the model
 (X_train, Y_train), (X_test, Y_test) = mnist.load_data()
 
+indexes_rand_samples = np.random.randint(low=1, high=100, size=rand_samples)
 
-#Get random samples from database to train
-random_X_train = X_train[np.random.choice(X_train.shape[0], rand_samples, replace=False), :]
 
-#Get random samples from database to test
-random_X_test = X_test[np.random.choice(X_test.shape[0], rand_samples, replace=False), :]
+# Flatten and normalize images
+num_pixels = X_train.shape[1] * X_train.shape[2]
 
+print(num_pixels)
+
+
+# Display Images
 print(rand_samples // 2, ',' , 2)
 
-for i in range(rand_samples):
-  plt.subplot(4, rand_samples//2, i+1)
+for index, i in enumerate(indexes_rand_samples):
+  plt.subplot(4, rand_samples//2, index+1)
   plt.tight_layout()
   plt.imshow(X_train[i], cmap='gray', interpolation='none')
   plt.title("{}".format(Y_train[i]))
