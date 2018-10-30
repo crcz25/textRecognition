@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, help="Choose how many samples to retrive for train and test even number")
 args = parser.parse_args()
 
-rand_samples = 4
+rand_samples = 12
 
 if args.samples:
   rand_samples = args.samples
@@ -28,25 +28,32 @@ if args.samples:
 
 
 # Download database from MNIST to train the model
-(X_train, Y_train), (X_test, Y_test) = mnist.load_data()
+(digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
 
 indexes_rand_samples = np.random.randint(low=1, high=100, size=rand_samples)
 
+randomized_digits_train = [digits_train[i] for index, i in enumerate(indexes_rand_samples)]
+randomized_digits_titles_train =[digits_titles_train[i] for index, i in enumerate(indexes_rand_samples)]
 
-# Flatten and normalize images
-num_pixels = X_train.shape[1] * X_train.shape[2]
+#print(randomized_digits_train)
 
-print(num_pixels)
+# Flatten and normalize images 28x28
+num_pixels = digits_train.shape[1] * digits_train.shape[2]
+
+digits_train = digits_train.reshape(digits_train.shape[0], num_pixels).astype('float32')
+digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
 
 
 # Display Images
 print(rand_samples // 2, ',' , 2)
+plt.figure(figsize=(10,10))
 
-for index, i in enumerate(indexes_rand_samples):
-  plt.subplot(4, rand_samples//2, index+1)
+for i in range(rand_samples):
+  print(i)
+  plt.subplot(4, rand_samples//2, i+1)
   plt.tight_layout()
-  plt.imshow(X_train[i], cmap='gray', interpolation='none')
-  plt.title("{}".format(Y_train[i]))
+  plt.imshow(randomized_digits_train[i], cmap='gray', interpolation='none')
+  plt.title("{}".format(randomized_digits_titles_train[i]))
   plt.xticks([])
   plt.yticks([])
 
