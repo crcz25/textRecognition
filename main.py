@@ -25,31 +25,53 @@ if args.samples:
   rand_samples = args.samples
   print("samples on")
 
-
-
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
 
+# Create array of n number of random indices to choose
 indexes_rand_samples = np.random.randint(low=1, high=100, size=rand_samples)
 
-randomized_digits_train = [digits_train[i] for index, i in enumerate(indexes_rand_samples)]
-randomized_digits_titles_train =[digits_titles_train[i] for index, i in enumerate(indexes_rand_samples)]
+# Get random images from train dataset
+randomized_digits_train = np.array([digits_train[i] for index, i in enumerate(indexes_rand_samples)])
+randomized_digits_titles_train = np.array([digits_titles_train[i] for index, i in enumerate(indexes_rand_samples)])
 
-#print(randomized_digits_train)
+# Get random images from test dataset
+randomized_digits_test = np.array([digits_test[i] for index, i in enumerate(indexes_rand_samples)])
+randomized_digits_titles_test = np.array([digits_titles_test[i] for index, i in enumerate(indexes_rand_samples)])
 
-# Flatten and normalize images 28x28
-num_pixels = digits_train.shape[1] * digits_train.shape[2]
 
-digits_train = digits_train.reshape(digits_train.shape[0], num_pixels).astype('float32')
-digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
+# Flatten and normalize pixel images to 0 and 1 on train dataset
+num_pixels = randomized_digits_train.shape[1] * randomized_digits_train.shape[2]
+digits_train = randomized_digits_train.reshape(randomized_digits_train.shape[0], num_pixels).astype('float32')
+digits_train /= 255
+
+# Flatten and normalize pixel images to 0 and 1 on test dataset
+num_pixels = randomized_digits_test.shape[1] * randomized_digits_test.shape[2]
+digits_test = randomized_digits_test.reshape(randomized_digits_test.shape[0], num_pixels).astype('float32')
+digits_test /= 255
+
+# Encode categories from 0 to 9 using one-hot encoding
+print("Encoding categories train titles")
+encoded_digits_titles_train = np_utils.to_categorical(randomized_digits_titles_train, 10);
+print("Encoding categories test titles")
+encoded_digits_titles_test = np_utils.to_categorical(randomized_digits_titles_test, 10);
+
+
+
 
 
 # Display Images
-print(rand_samples // 2, ',' , 2)
+print("Grid:", rand_samples // 2, ',' , 2)
 plt.figure(figsize=(10,10))
 
+# Categorize the title digit numbers using one-hot encoding from 0 to 9
+# For example, the nmber 4 should be represented as:
+#   [0,0,0,1,0,0,0,0,0,0]
+
+
+plt.suptitle('Test data', fontsize=20)
 for i in range(rand_samples):
-  print(i)
+  #print(i)
   plt.subplot(4, rand_samples//2, i+1)
   plt.tight_layout()
   plt.imshow(randomized_digits_train[i], cmap='gray', interpolation='none')
