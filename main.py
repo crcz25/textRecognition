@@ -1,7 +1,4 @@
 from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
 from keras.utils import np_utils
 import matplotlib.pyplot as plt
 
@@ -9,11 +6,11 @@ from pprint import pprint
 
 import numpy as np
 
-import urllib
-import random
 import sys
 import argparse
 import math
+
+from network import model
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--samples", type=int, help="Choose how many samples to retrive for train and test even number")
@@ -39,7 +36,6 @@ randomized_digits_titles_train = np.array([digits_titles_train[i] for index, i i
 randomized_digits_test = np.array([digits_test[i] for index, i in enumerate(indexes_rand_samples)])
 randomized_digits_titles_test = np.array([digits_titles_test[i] for index, i in enumerate(indexes_rand_samples)])
 
-
 # Flatten and normalize pixel images to 0 and 1 on train dataset
 num_pixels = randomized_digits_train.shape[1] * randomized_digits_train.shape[2]
 digits_train = randomized_digits_train.reshape(randomized_digits_train.shape[0], num_pixels).astype('float32')
@@ -56,6 +52,12 @@ encoded_digits_titles_train = np_utils.to_categorical(randomized_digits_titles_t
 print("Encoding categories test titles")
 encoded_digits_titles_test = np_utils.to_categorical(randomized_digits_titles_test, 10);
 
+
+# Build the model
+classes = 10
+pixels = 784
+
+model = model(pixels, classes)
 
 
 
