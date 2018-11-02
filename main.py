@@ -52,19 +52,21 @@ encoded_digits_titles_train = np_utils.to_categorical(randomized_digits_titles_t
 print("Encoding categories test titles")
 encoded_digits_titles_test = np_utils.to_categorical(randomized_digits_titles_test, 10);
 
+# Reshape of arrays to have same neural dimm
+classes = pow(2, 9)
+pixels = 784
 
 # Build the model
-classes = 10
-pixels = 784
+
 
 model = model(pixels, classes)
 
-lel = model.fit(randomized_digits_train,
-randomized_digits_titles_train,
+lel = model.fit(digits_train,
+encoded_digits_titles_train,
 batch_size=128,
 epochs=20,
 verbose=2,
-validation_data=(randomized_digits_test, randomized_digits_titles_test))
+validation_data=(digits_test, encoded_digits_titles_test))
 
 # training the model and saving metrics in history
 save_dir = "/results/"
