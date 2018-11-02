@@ -59,7 +59,19 @@ pixels = 784
 
 model = model(pixels, classes)
 
+lel = model.fit(randomized_digits_train,
+randomized_digits_titles_train,
+batch_size=128,
+epochs=20,
+verbose=2,
+validation_data=(randomized_digits_test, randomized_digits_titles_test))
 
+# training the model and saving metrics in history
+save_dir = "/results/"
+model_name = 'keras_mnist.h5'
+model_path = sys.os.path.join(save_dir, model_name)
+model.save(model_path)
+print('Saved trained model at %s ' % model_path)
 
 
 # Display Images
