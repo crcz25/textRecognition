@@ -7,20 +7,24 @@ from pprint import pprint
 import numpy as np
 
 import sys
+import os
 import argparse
 import math
 
 from network import model
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, help="Choose how many samples to retrive for train and test even number")
+parser.add_argument("--samples", type=int, help="Choose how many samples to retrive for train and test even number * 100")
 args = parser.parse_args()
 
-rand_samples = 12
+rand_samples = 20*100
 
 if args.samples:
   rand_samples = args.samples
   print("samples on")
+
+# Grid Plot
+print("Grid:", rand_samples // 2, ',' , 2)
 
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
@@ -46,6 +50,10 @@ num_pixels = randomized_digits_test.shape[1] * randomized_digits_test.shape[2]
 digits_test = randomized_digits_test.reshape(randomized_digits_test.shape[0], num_pixels).astype('float32')
 digits_test /= 255
 
+# Categorize the title digit numbers using one-hot encoding from 0 to 9
+# For example, the nmber 4 should be represented as:
+#   [0,0,0,1,0,0,0,0,0,0]
+
 # Encode categories from 0 to 9 using one-hot encoding
 print("Encoding categories train titles")
 encoded_digits_titles_train = np_utils.to_categorical(randomized_digits_titles_train, 10);
@@ -57,35 +65,31 @@ classes = pow(2, 9)
 pixels = 784
 
 # Build the model
-
-
 model = model(pixels, classes)
 
+# Train model with 20 epochs that updates every 100 images and a verbose of 2 is used to format and reduce the output line
 lel = model.fit(digits_train,
 encoded_digits_titles_train,
-batch_size=128,
+batch_size=100,
 epochs=20,
 verbose=2,
 validation_data=(digits_test, encoded_digits_titles_test))
 
+score = model.evaluate(digits_test, encoded_digits_titles_test, verbose=0)
+print("Error: {}".format(100 - score[1]*100))
+
 # training the model and saving metrics in history
-save_dir = "/results/"
-model_name = 'keras_mnist.h5'
-model_path = sys.os.path.join(save_dir, model_name)
+save_dir = "./results/"
+model_name = './keras_mnist.h5'
+model_path = os.path.join(model_name)
 model.save(model_path)
 print('Saved trained model at %s ' % model_path)
 
-
+"""
 # Display Images
-print("Grid:", rand_samples // 2, ',' , 2)
-plt.figure(figsize=(10,10))
+plt.figure()
 
-# Categorize the title digit numbers using one-hot encoding from 0 to 9
-# For example, the nmber 4 should be represented as:
-#   [0,0,0,1,0,0,0,0,0,0]
-
-
-plt.suptitle('Test data', fontsize=20)
+plt.suptitle('Test data', fontsize=10)
 for i in range(rand_samples):
   #print(i)
   plt.subplot(4, rand_samples//2, i+1)
@@ -97,3 +101,4 @@ for i in range(rand_samples):
 
 # show the plot
 plt.show()
+"""
