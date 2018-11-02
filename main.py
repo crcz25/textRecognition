@@ -14,14 +14,16 @@ import math
 from network import model
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--samples", type=int, help="Choose how many samples to retrive for train and test even number * 100")
+parser.add_argument("--n_test", type=int or float, help="Choose how many samples to retrive for train and test even number *1000")
+parser.add_argument("--n_train", type=int, help="Choose how many samples to retrive for train and test even number *1000")
 args = parser.parse_args()
 
-rand_samples_train = 60*100
-rand_samples_test = 10*100
+rand_samples_train = int(0.28*1000)
+rand_samples_test = int(1*1000)
 
 if args.samples:
-  rand_samples_test = args.samples
+  rand_samples_test = int(args.n_test*1000)
+  rand_samples_train = int(args.n_train*1000)
   print("samples on")
 
 # Grid Plot
