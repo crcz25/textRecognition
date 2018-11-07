@@ -91,7 +91,7 @@ plt.plot(model_train.history['val_acc'])
 plt.title('Accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='lower right')
+plt.legend(['Train', 'Test'], loc='lower right')
 
 stats.add_subplot(2,1,2)
 plt.plot(model_train.history['loss'])
@@ -99,7 +99,7 @@ plt.plot(model_train.history['val_loss'])
 plt.title('Loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper right')
+plt.legend(['Train', 'Test'], loc='upper right')
 plt.tight_layout()
 
 # Show correct predictions
