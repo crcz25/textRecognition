@@ -1,14 +1,13 @@
 from keras.datasets import mnist
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
+from keras.layers import Dropout, Dropout, Dense, Flatten
+from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.utils import np_utils
-import matplotlib.pyplot as plt
 
 from pprint import pprint
 
+import matplotlib.pyplot as plt
 import numpy as np
-
 import urllib
 import random
 import sys
@@ -25,7 +24,8 @@ def model(num_pixels, num_classes):
 	model.add(Dense(num_classes, activation='relu'))
 	model.add(Dropout(0.2))
 
-	model.add(Dense(10, activation='softmax'))
+	model.add(Dense(num_classes, activation='softmax'))
+
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 

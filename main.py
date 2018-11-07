@@ -13,45 +13,17 @@ import math
 
 from network import model
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--n_test", type=int or float, help="Choose how many samples to retrive for train and test even number *1000")
-parser.add_argument("--n_train", type=int, help="Choose how many samples to retrive for train and test even number *1000")
-args = parser.parse_args()
-
-rand_samples_train = int(0.28*1000)
-rand_samples_test = int(1*1000)
-
-if args.samples:
-  rand_samples_test = int(args.n_test*1000)
-  rand_samples_train = int(args.n_train*1000)
-  print("samples on")
-
-# Grid Plot
-print("Grid:", rand_samples_test // 2, ',' , 2)
-
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
 
-# Create array of n number of random indices to choose
-indexes_rand_samples_train = np.random.randint(low=1, high=100, size=rand_samples_train)
-indexes_rand_samples_test = np.random.randint(low=1, high=100, size=rand_samples_test)
-
-# Get random images from train dataset
-randomized_digits_train = np.array([digits_train[i] for index, i in enumerate(indexes_rand_samples_train)])
-randomized_digits_titles_train = np.array([digits_titles_train[i] for index, i in enumerate(indexes_rand_samples_train)])
-
-# Get random images from test dataset
-randomized_digits_test = np.array([digits_test[i] for index, i in enumerate(indexes_rand_samples_test)])
-randomized_digits_titles_test = np.array([digits_titles_test[i] for index, i in enumerate(indexes_rand_samples_test)])
-
 # Flatten and normalize pixel images to 0 and 1 on train dataset
-num_pixels = randomized_digits_train.shape[1] * randomized_digits_train.shape[2]
-digits_train = randomized_digits_train.reshape(randomized_digits_train.shape[0], num_pixels).astype('float32')
+num_pixels = digits_train.shape[1] * digits_train.shape[2]
+digits_train = digits_train.reshape(digits_train.shape[0], num_pixels).astype('float32')
 digits_train /= 255
 
 # Flatten and normalize pixel images to 0 and 1 on test dataset
-num_pixels = randomized_digits_test.shape[1] * randomized_digits_test.shape[2]
-digits_test = randomized_digits_test.reshape(randomized_digits_test.shape[0], num_pixels).astype('float32')
+num_pixels = digits_test.shape[1] * digits_test.shape[2]
+digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
 digits_test /= 255
 
 # Categorize the title digit numbers using one-hot encoding from 0 to 9
@@ -60,37 +32,60 @@ digits_test /= 255
 
 # Encode categories from 0 to 9 using one-hot encoding
 print("Encoding categories train titles")
-encoded_digits_titles_train = np_utils.to_categorical(randomized_digits_titles_train, 10);
+digits_titles_train = np_utils.to_categorical(digits_titles_train);
+
 print("Encoding categories test titles")
-encoded_digits_titles_test = np_utils.to_categorical(randomized_digits_titles_test, 10);
+digits_titles_test = np_utils.to_categorical(digits_titles_test);
 
 # Reshape of arrays to have same neural dimm
-classes = pow(2, 9)
+classes = 10
 pixels = 784
+print(classes)
 
 # Build the model
 model = model(pixels, classes)
 
 # Train model with 20 epochs that updates every 200 images and a verbose of 2 is used to format and reduce the output line
-lel = model.fit(digits_train,
-encoded_digits_titles_train,
-batch_size=200,
-epochs=20,
+model_train = model.fit(digits_train, digits_titles_train,
+batch_size=250,
+epochs=40,
 verbose=2,
-validation_data=(digits_test, encoded_digits_titles_test))
+validation_data=(digits_test, digits_titles_test))
 
 # training the model and saving metrics in history
 save_dir = "./results/"
 model_name = './keras_mnist.h5'
 model_path = os.path.join(model_name)
 model.save(model_path)
-print('Saved trained model at %s ' % model_path)
+print('\nSaved trained model at %s ' % model_path)
 
 model_stats = load_model('./keras_mnist.h5')
-model_performance = model_stats.evaluate(digits_test, encoded_digits_titles_test, verbose=2)
-print("Loss: {0:.2f}".format(model_performance[0]))
-print("Accuracy: {0:.2f}".format(model_performance[1]))
-print("Error: {0:.2f}".format(1-model_performance[1]))
+model_performance = model_stats.evaluate(digits_test, digits_titles_test, verbose=2)
+print("\nLoss: {0:.4f}".format(model_performance[0]))
+print("Accuracy: {0:.4f}".format(model_performance[1]))
+print("Error: {0:.4f}".format(1-model_performance[1]))
+
+# Plott performance and graph the learning curve
+fig = plt.figure()
+plt.subplot(2,1,1)
+plt.plot(model_train.history['acc'])
+plt.plot(model_train.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='lower right')
+
+plt.subplot(2,1,2)
+plt.plot(model_train.history['loss'])
+plt.plot(model_train.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper right')
+
+plt.tight_layout()
+
+plt.show()
 
 """
 # Display Images
