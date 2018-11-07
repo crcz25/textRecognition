@@ -18,13 +18,13 @@ import math
 def model(num_pixels, num_classes):
 	model = Sequential()
 
-	model.add(Dense(784, activation='relu', input_shape=(num_pixels,)))
+	model.add(Dense(pow(2, num_classes), activation='relu', input_shape=(num_pixels,)))
 	model.add(Dropout(0.2))
 
-	model.add(Dense(10, activation='relu'))
+	model.add(Dense(pow(2, num_classes), activation='relu'))
 	model.add(Dropout(0.2))
 
-	model.add(Dense(10, activation='softmax'))
+	model.add(Dense(num_classes, activation='softmax'))
 
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
