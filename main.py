@@ -11,7 +11,10 @@ import os
 import argparse
 import math
 
-from network import model
+from network import model, larger_model
+
+from keras import backend as K
+K.set_image_dim_ordering('th')
 
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
@@ -25,6 +28,14 @@ digits_train /= 255
 num_pixels = digits_test.shape[1] * digits_test.shape[2]
 digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
 digits_test /= 255
+
+"""
+# For web app model
+digits_train = digits_train.reshape(digits_train.shape[0], 1, 28, 28).astype('float32')
+digits_test = digits_test.reshape(digits_test.shape[0], 1, 28, 28).astype('float32')
+digits_train /= 255
+digits_test /= 255
+"""
 
 # print the final input shape ready for training
 print("Train shape", digits_train.shape)
@@ -131,3 +142,12 @@ for i, incorrect in enumerate(incorrect_indices[:15]):
 plt.tight_layout()
 
 plt.show()
+
+"""
+# Web app model
+model2 = webapp_model()
+model2.fit(digits_train, encoded_titles_train, validation_data=(digits_test, encoded_titles_test), epochs=10, batch_size=200)
+# Final evaluation of the model
+scores = model2.evaluate(digits_test, encoded_titles_test, verbose=0)
+print("Large CNN Error: %.2f%%" % (100-scores[1]*100))
+"""
