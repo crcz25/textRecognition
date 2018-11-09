@@ -11,10 +11,20 @@ import os
 import argparse
 import math
 
-from network import model, larger_model
+from network import model, webapp_model
 
 from keras import backend as K
 K.set_image_dim_ordering('th')
+import tensorflowjs
+
+# Parameters
+classes = 10
+pixels = 784
+
+batch_size = 200
+epochs = 20
+verbose = 2
+
 
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
@@ -52,18 +62,14 @@ print("Encoding categories train titles",  digits_titles_train.shape)
 encoded_titles_test = np_utils.to_categorical(digits_titles_test, 10)
 print("Encoding categories test titles",  digits_titles_test.shape)
 
-# Reshape of arrays to have same neural dimm
-classes = 10
-pixels = 784
-
 # Build the model
 model = model(pixels, classes)
 
 # Train model with 20 epochs that updates every 200 images and a verbose of 2 is used to format and reduce the output line
 model_train = model.fit(digits_train, encoded_titles_train,
-batch_size=200,
-epochs=40,
-verbose=2,
+batch_size=batch_size,
+epochs=epochs,
+verbose=verbose,
 validation_data=(digits_test, encoded_titles_test))
 
 # training the model and saving metrics in history
@@ -72,9 +78,13 @@ model_name = './keras_mnist.h5'
 model_path = os.path.join(model_name)
 model.save(model_path)
 
+print("Saving model for webapp")
+model_save_path = "output"
+tensorflowjs.converters.save_keras_model(model, model_save_path)
+
 trained_model = load_model('./keras_mnist.h5')
 print("Calculate performance")
-performance = trained_model.evaluate(digits_test, encoded_titles_test, verbose=2)
+performance = trained_model.evaluate(digits_test, encoded_titles_test, verbose=verbose)
 
 print("Create predictions based on tests")
 predictions = trained_model.predict_classes(digits_test)
