@@ -18,11 +18,11 @@ import math
 def model(num_pixels, num_classes):
 	model = Sequential()
 
-	model.add(Dense(pow(2, num_classes), activation='relu', input_shape=(num_pixels,)))
+	model.add(Dense(256, activation='relu', input_shape=(num_pixels,)))
 	model.add(Dropout(0.2))
 
-	model.add(Dense(pow(2, num_classes), activation='relu'))
-	model.add(Dropout(0.2))
+	model.add(Dense(64, activation='relu'))
+	#model.add(Dropout(0.2))
 
 	model.add(Dense(num_classes, activation='softmax'))
 

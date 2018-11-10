@@ -29,6 +29,15 @@ verbose = 2
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
 
+aux_train =  np.copy(digits_train)
+aux_titles_train =  np.copy(digits_titles_train)
+
+digits_train = aux[0]
+digits_train_cross = aux[1]
+digits_train_test = aux[2]
+
+digits_titles_train = np.split(digits_titles_train, [48000, 54000])
+
 # Flatten and normalize pixel images to 0 and 1 on train dataset
 num_pixels = digits_train.shape[1] * digits_train.shape[2]
 digits_train = digits_train.reshape(digits_train.shape[0], num_pixels).astype('float32')
@@ -39,6 +48,7 @@ num_pixels = digits_test.shape[1] * digits_test.shape[2]
 digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
 digits_test /= 255
 
+
 """
 # For web app model
 digits_train = digits_train.reshape(digits_train.shape[0], 1, 28, 28).astype('float32')
@@ -46,6 +56,7 @@ digits_test = digits_test.reshape(digits_test.shape[0], 1, 28, 28).astype('float
 digits_train /= 255
 digits_test /= 255
 """
+
 
 # print the final input shape ready for training
 print("Train shape", digits_train.shape)
@@ -99,8 +110,9 @@ print("\nLoss: {0:.4f}".format(performance[0]))
 print("Accuracy: {0:.4f}".format(performance[1]))
 print("Error: {0:.4f}\n".format(1 - performance[1]))
 
-
-#pprint(model_train.__dict__)
+print()
+pprint(model_train.__dict__)
+print()
 
 # Plott performance and graph the learning curve
 stats = plt.figure()
@@ -152,6 +164,7 @@ for i, incorrect in enumerate(incorrect_indices[:15]):
 plt.tight_layout()
 
 plt.show()
+
 
 """
 # Web app model
