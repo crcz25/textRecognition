@@ -14,41 +14,56 @@ import math
 from network import model, webapp_model
 
 from keras import backend as K
-K.set_image_dim_ordering('th')
 import tensorflowjs
+import os
+
+#K.set_image_dim_ordering('th')
+os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
 
 # Parameters
 classes = 10
 pixels = 784
 
-batch_size = 200
-epochs = 20
+batch_size = 128
+epochs = 30
 verbose = 2
 
 
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
 
-aux_train =  np.copy(digits_train)
-aux_titles_train =  np.copy(digits_titles_train)
-
-digits_train = aux[0]
-digits_train_cross = aux[1]
-digits_train_test = aux[2]
-
-digits_titles_train = np.split(digits_titles_train, [48000, 54000])
 
 # Flatten and normalize pixel images to 0 and 1 on train dataset
-num_pixels = digits_train.shape[1] * digits_train.shape[2]
-digits_train = digits_train.reshape(digits_train.shape[0], num_pixels).astype('float32')
+digits_train = digits_train.reshape(digits_train.shape[0], pixels).astype('float32')
 digits_train /= 255
 
 # Flatten and normalize pixel images to 0 and 1 on test dataset
-num_pixels = digits_test.shape[1] * digits_test.shape[2]
-digits_test = digits_test.reshape(digits_test.shape[0], num_pixels).astype('float32')
+digits_test = digits_test.reshape(digits_test.shape[0], pixels).astype('float32')
 digits_test /= 255
 
+encoded_titles_train = np_utils.to_categorical(digits_titles_train, classes)
+print("Encoding categories train titles",  digits_titles_train.shape)
 
+encoded_titles_test = np_utils.to_categorical(digits_titles_test, classes)
+print("Encoding categories test titles",  digits_titles_test.shape)
+
+
+#Divide data
+digits_train = np.split(digits_train, [50000])
+encoded_titles_train = np.split(encoded_titles_train, [50000])
+
+aux_train =  np.copy(digits_train)
+aux_titles_train =  np.copy(encoded_titles_train)
+
+digits_train = aux_train[0]
+digits_train_cross = aux_train[1]
+#digits_train_test = aux_train[2]
+
+encoded_titles_train = aux_titles_train[0]
+encoded_titles_train_cross = aux_titles_train[1]
+#encoded_titles_train_test = aux_titles_train[2]
+
+print("Test on ", len(digits_test))
 """
 # For web app model
 digits_train = digits_train.reshape(digits_train.shape[0], 1, 28, 28).astype('float32')
@@ -59,19 +74,15 @@ digits_test /= 255
 
 
 # print the final input shape ready for training
-print("Train shape", digits_train.shape)
-print("Test shape", digits_test.shape)
+#print("Train shape", digits_train.shape)
+#print("Test shape", digits_test.shape)
 
 # Categorize the title digit numbers using one-hot encoding from 0 to 9
 # For example, the nmber 4 should be represented as:
 #   [0,0,0,1,0,0,0,0,0,0]
 
 # Encode categories from 0 to 9 using one-hot encoding
-encoded_titles_train = np_utils.to_categorical(digits_titles_train, 10)
-print("Encoding categories train titles",  digits_titles_train.shape)
 
-encoded_titles_test = np_utils.to_categorical(digits_titles_test, 10)
-print("Encoding categories test titles",  digits_titles_test.shape)
 
 # Build the model
 model = model(pixels, classes)
@@ -81,7 +92,7 @@ model_train = model.fit(digits_train, encoded_titles_train,
 batch_size=batch_size,
 epochs=epochs,
 verbose=verbose,
-validation_data=(digits_test, encoded_titles_test))
+validation_data=(digits_train_cross, encoded_titles_train_cross))
 
 # training the model and saving metrics in history
 print("Saving model to calculate performance")
@@ -110,9 +121,9 @@ print("\nLoss: {0:.4f}".format(performance[0]))
 print("Accuracy: {0:.4f}".format(performance[1]))
 print("Error: {0:.4f}\n".format(1 - performance[1]))
 
-print()
-pprint(model_train.__dict__)
-print()
+#print()
+#pprint(model_train.__dict__)
+#print()
 
 # Plott performance and graph the learning curve
 stats = plt.figure()
@@ -121,7 +132,7 @@ plt.suptitle('Stats', fontsize=16)
 stats.add_subplot(2,1,1)
 plt.plot(model_train.history['acc'])
 plt.plot(model_train.history['val_acc'])
-plt.title('Accuracy')
+plt.title('Model Accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['Train', 'Test'], loc='lower right')
@@ -129,7 +140,7 @@ plt.legend(['Train', 'Test'], loc='lower right')
 stats.add_subplot(2,1,2)
 plt.plot(model_train.history['loss'])
 plt.plot(model_train.history['val_loss'])
-plt.title('Loss')
+plt.title('Model Loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['Train', 'Test'], loc='upper right')
