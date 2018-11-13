@@ -41,6 +41,15 @@ digits_train /= 255
 digits_test = digits_test.reshape(digits_test.shape[0], pixels).astype('float32')
 digits_test /= 255
 
+
+"""
+# For web app model
+digits_train = digits_train.reshape(digits_train.shape[0], 28, 28, 1).astype('float32')
+digits_test = digits_test.reshape(digits_test.shape[0], 28, 28, 1).astype('float32')
+digits_train /= 255
+digits_test /= 255
+"""
+
 encoded_titles_train = np_utils.to_categorical(digits_titles_train, classes)
 print("Encoding categories train titles",  digits_titles_train.shape)
 
@@ -64,13 +73,8 @@ encoded_titles_train_cross = aux_titles_train[1]
 #encoded_titles_train_test = aux_titles_train[2]
 
 print("Test on ", len(digits_test))
-"""
-# For web app model
-digits_train = digits_train.reshape(digits_train.shape[0], 1, 28, 28).astype('float32')
-digits_test = digits_test.reshape(digits_test.shape[0], 1, 28, 28).astype('float32')
-digits_train /= 255
-digits_test /= 255
-"""
+
+
 
 
 # print the final input shape ready for training
@@ -94,15 +98,12 @@ epochs=epochs,
 verbose=verbose,
 validation_data=(digits_train_cross, encoded_titles_train_cross))
 
+
 # training the model and saving metrics in history
 print("Saving model to calculate performance")
 model_name = './keras_mnist.h5'
 model_path = os.path.join(model_name)
 model.save(model_path)
-
-print("Saving model for webapp")
-model_save_path = "output"
-tensorflowjs.converters.save_keras_model(model, model_save_path)
 
 trained_model = load_model('./keras_mnist.h5')
 print("Calculate performance")
@@ -180,8 +181,14 @@ plt.show()
 """
 # Web app model
 model2 = webapp_model()
-model2.fit(digits_train, encoded_titles_train, validation_data=(digits_test, encoded_titles_test), epochs=10, batch_size=200)
+model2.fit(digits_train, encoded_titles_train,
+validation_data=(digits_train_cross, encoded_titles_train_cross),
+epochs=20, batch_size=200)
 # Final evaluation of the model
 scores = model2.evaluate(digits_test, encoded_titles_test, verbose=0)
 print("Large CNN Error: %.2f%%" % (100-scores[1]*100))
+
+print("Saving model for webapp")
 """
+model_save_path = "output"
+tensorflowjs.converters.save_keras_model(model, model_save_path)

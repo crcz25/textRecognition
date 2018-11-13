@@ -20,12 +20,13 @@ def model(num_pixels, num_classes):
 	model = Sequential()
 
 	model.add(Dense(512, activation='relu', input_shape=(784,)))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(0.2))
 
 	model.add(Dense(256, activation='relu'))
 	#model.add(Dropout(0.2))
 
 	model.add(Dense(10, activation='softmax'))
+
 
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -35,7 +36,7 @@ def model(num_pixels, num_classes):
 def webapp_model():
 	# create model
 	model = Sequential()
-	model.add(Conv2D(32, (5, 5), border_mode='valid', input_shape=(28, 28, 1), activation='relu'))
+	model.add(Conv2D(32, (5, 5), padding='valid', input_shape=(28, 28, 1), activation='relu'))
 	model.add(MaxPooling2D(pool_size=(2, 2)))
 	model.add(Dropout(0.2))
 	model.add(Flatten())
