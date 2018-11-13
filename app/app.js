@@ -1,6 +1,3 @@
-//-------------------
-// GLOBAL variables
-//-------------------
 let model;
 
 document.getElementById('chart_box').innerHTML = "";
@@ -21,9 +18,9 @@ function preprocessCanvas(image) {
         .mean(2)
         .expandDims(2)
         .expandDims()
-        .reshape([1, 784])
+        //.reshape([28, 28, 1])
         .toFloat();
-    //console.log(tensor.shape);
+    console.log(tensor.shape);
     return tensor.div(255.0);
 }
 

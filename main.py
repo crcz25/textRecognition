@@ -19,8 +19,8 @@ import os
 
 web = True
 
-K.set_image_dim_ordering('th')
-#os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
+# K.set_image_dim_ordering('th')
+os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
 
 # Parameters
 classes = 10
@@ -37,8 +37,8 @@ verbose = 3
 if web:
   # For web app model
   print("Data for web model")
-  digits_train = digits_train.reshape(digits_train.shape[0], 1, 28, 28).astype('float32')
-  digits_test = digits_test.reshape(digits_test.shape[0], 1, 28, 28).astype('float32')
+  digits_train = digits_train.reshape(digits_train.shape[0], 28, 28, 1).astype('float32')
+  digits_test = digits_test.reshape(digits_test.shape[0], 28, 28, 1).astype('float32')
   digits_train /= 255
   digits_test /= 255
 else :
