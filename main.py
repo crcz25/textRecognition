@@ -24,9 +24,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
 classes = 10
 pixels = 784
 
-batch_size = 128
+batch_size = 200
 epochs = 30
-verbose = 2
+verbose = 3
 
 
 # Download database from MNIST to train the model
@@ -123,11 +123,11 @@ print("Error: {0:.4f}\n".format(1 - performance[1]))
 
 #print()
 #pprint(model_train.__dict__)
-#print()
+print(model_train.history.keys())
 
 # Plott performance and graph the learning curve
 stats = plt.figure()
-plt.suptitle('Stats', fontsize=16)
+#plt.suptitle('Stats', fontsize=16)
 
 stats.add_subplot(2,1,1)
 plt.plot(model_train.history['acc'])
@@ -140,7 +140,7 @@ plt.legend(['Train', 'Test'], loc='lower right')
 stats.add_subplot(2,1,2)
 plt.plot(model_train.history['loss'])
 plt.plot(model_train.history['val_loss'])
-plt.title('Model Loss')
+plt.title('Loss function')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['Train', 'Test'], loc='upper right')
