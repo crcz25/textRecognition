@@ -23,10 +23,10 @@ web = False
 # Parameters
 classes = 10
 pixels = 784
-dropout = 0.2
+dropout = 0.1
 
-batch_size = 128
-epochs = 20
+batch_size = 200
+epochs = 30
 verbose = 2
 
 
