@@ -26,7 +26,7 @@ pixels = 784
 dropout = 0.1
 
 batch_size = 200
-epochs = 10
+epochs = 20
 verbose = 2
 
 
