@@ -23,7 +23,7 @@ web = False
 # Parameters
 classes = 10
 pixels = 784
-dropout = 0.1
+dropout = 0.2
 
 batch_size = 200
 epochs = 20
