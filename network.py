@@ -19,10 +19,10 @@ import math
 def model(pixels, classes, dropout):
 	model = Sequential()
 
-	model.add(Dense(512, activation='relu', input_shape=(pixels,)))
+	model.add(Dense(10, activation='relu', input_shape=(pixels,)))
 	model.add(Dropout(dropout))
 
-	model.add(Dense(256, activation='relu'))
+	model.add(Dense(10, activation='relu'))
 	# model.add(Dropout(dropout))
 
 	model.add(Dense(classes, activation='softmax'))
