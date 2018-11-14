@@ -1,9 +1,9 @@
 
-var canvasWidth           	= 200;
-var canvasHeight 			= 200;
+var canvasWidth           	= 224;
+var canvasHeight 			= 224;
 var canvasStrokeStyle		= "white";
 var canvasLineJoin			= "round";
-var canvasLineWidth       	= 8;
+var canvasLineWidth       	= 10;
 var canvasBackgroundColor 	= "black";
 var canvasId              	= "canvas";
 
@@ -28,6 +28,8 @@ if(typeof G_vmlCanvasManager != 'undefined') {
 }
 
 ctx = canvas.getContext("2d");
+// ctx.fillStyle = "black";
+// ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
 //---------------------
@@ -141,6 +143,8 @@ function addUserGesture(x, y, dragging) {
 //-------------------
 function drawOnCanvas() {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	ctx.strokeStyle = canvasStrokeStyle;
 	ctx.lineJoin    = canvasLineJoin;
@@ -164,6 +168,8 @@ function drawOnCanvas() {
 //------------------------
 function clearCanvas(id) {
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	clickX = new Array();
 	clickY = new Array();
 	clickD = new Array();

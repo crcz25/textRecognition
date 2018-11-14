@@ -13,25 +13,43 @@ async function loadModel() {
 loadModel();
 
 function preprocessCanvas(image) {
-    let tensor = tf.fromPixels(image)
-        .resizeNearestNeighbor([28, 28])
-        .mean(2)
-        .expandDims(2)
-        .expandDims()
-        //.reshape([28, 28, 1])
-        .toFloat();
-    console.log(tensor.shape);
+	console.log("PREPROCESS")
+
+    let tensor = tf.fromPixels(image).mean(2).reshape([1, 784]).toFloat()
+	console.log(tensor)
     return tensor.div(255.0);
 }
+
+function cloneCanvas(oldCanvas) {
+
+    //create a new canvas
+    var newCanvas = document.createElement('canvas');
+	var context = newCanvas.getContext('2d');
+
+
+    //set dimensions
+    newCanvas.width = oldCanvas.width / 8;
+	newCanvas.height = oldCanvas.height / 8;
+
+    //apply the old canvas to the new one
+    context.drawImage(oldCanvas, 0, 0, oldCanvas.width/8, oldCanvas.height/8);
+
+    //return the new canvas
+    return newCanvas;
+}
+
 
 async function predict() {
 
 	// get image data from canvas
 	var imageData = canvas.toDataURL();
-	console.log(imageData)
+
+	var cln = cloneCanvas(canvas)
+	console.log(cln)
+	console.log(cln.toDataURL())
 
 	// preprocess canvas
-    let tensor = preprocessCanvas(canvas);
+    let tensor = preprocessCanvas(cln);
     console.log(tensor)
 
 	// make predictions on the preprocessed image tensor

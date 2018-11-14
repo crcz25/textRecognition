@@ -22,7 +22,7 @@ web = False
 # Parameters
 classes = 10
 pixels = 784
-dropout = 0.2
+dropout = 0.1
 
 batch_size = 200
 epochs = 30
@@ -54,7 +54,7 @@ else :
   digits_train /= 255
   digits_test /= 255
 
-
+  print("Train shape", digits_train[0].shape)
 
 # Categorize the title corresponding to each digit using one-hot encoding from 0 to 9, transforming the vector of class integers into a binary matrix
 # For example, the nmber 4 should be represented as:
@@ -87,7 +87,6 @@ encoded_titles_train_cross = aux_titles_train[1]
 
 # print the final input shape ready for training
 # print("Test on ", len(digits_test))
-# print("Train shape", digits_train.shape)
 # print("Test shape", digits_test.shape)
 
 if web:
