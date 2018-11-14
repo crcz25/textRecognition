@@ -25,7 +25,7 @@ classes = 10
 pixels = 784
 dropout = 0.1
 
-batch_size = 100
+batch_size = 200
 epochs = 10
 verbose = 2
 
