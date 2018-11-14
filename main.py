@@ -1,6 +1,7 @@
 from keras.datasets import mnist
 from keras.utils import np_utils
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from keras.models import load_model
 from pprint import pprint
 
@@ -22,10 +23,10 @@ web = False
 # Parameters
 classes = 10
 pixels = 784
-dropout = 0.1
+dropout = 0.2
 
-batch_size = 200
-epochs = 30
+batch_size = 128
+epochs = 20
 verbose = 2
 
 
@@ -142,7 +143,7 @@ print("Error: {0:.4f}\n".format(1 - performance[1]))
 
 #print()
 #pprint(model_train.__dict__)
-print(model_train.history.keys())
+#print(model_train.history.keys())
 
 # Plott performance and graph the learning curve
 stats = plt.figure()
@@ -194,3 +195,28 @@ for i, incorrect in enumerate(incorrect_indices[:15]):
 plt.tight_layout()
 
 plt.show()
+
+
+"""
+from PIL import Image
+
+trained_model = load_model('./keras_mnist.h5')
+img = np.array(Image.open('./download.jpg').convert("L"))
+img = img.reshape(1, pixels).astype('float32')
+img /= 255
+lel = np.array([0,0,1,0,0,0,0,0,0,0]).reshape(1, 10)
+print(img.shape)
+print(lel.shape)
+performance = trained_model.evaluate(img, lel, verbose=verbose)
+predictions = trained_model.predict_classes(img)
+correct_indices = np.nonzero(predictions == lel)[0]
+incorrect_indices = np.nonzero(predictions != lel)[0]
+print("\nSuccesses:", len(correct_indices))
+print("Errors:", len(incorrect_indices))
+
+#Performance measures
+print("Large CNN Error: %.2f%%" % (100-performance[1]*100))
+print("\nLoss: {0:.4f}".format(performance[0]))
+print("Accuracy: {0:.4f}".format(performance[1]))
+print("Error: {0:.4f}\n".format(1 - performance[1]))
+"""
