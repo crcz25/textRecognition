@@ -22,7 +22,7 @@ def model(pixels, classes, dropout):
 	model.add(Dense(10, activation='relu', input_shape=(pixels,)))
 	model.add(Dropout(dropout))
 
-	model.add(Dense(10, activation='relu'))
+	model.add(Dense(32, activation='relu'))
 	# model.add(Dropout(dropout))
 
 	model.add(Dense(classes, activation='softmax'))
