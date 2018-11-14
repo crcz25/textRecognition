@@ -17,14 +17,12 @@ from keras import backend as K
 import tensorflowjs
 import os
 
-web = True
-
-# K.set_image_dim_ordering('th')
-os.environ['TF_CPP_MIN_LOG_LEVEL']='3'
+web = False
 
 # Parameters
 classes = 10
 pixels = 784
+dropout = 0.2
 
 batch_size = 200
 epochs = 30
@@ -33,6 +31,11 @@ verbose = 2
 
 # Download database from MNIST to train the model
 (digits_train, digits_titles_train), (digits_test, digits_titles_test) = mnist.load_data()
+
+
+# We resize the array since mnist is structured as a 3-dimensional array, for the perceptron model we need to reduce the images to a one size vector
+# an image of 28x28 is tranformed to 784 px
+# Also we need to scale the pizels from 0-255 to 0-1 by dividing them by 255
 
 if web:
   # For web app model
@@ -52,11 +55,21 @@ else :
   digits_test /= 255
 
 
+
+# Categorize the title corresponding to each digit using one-hot encoding from 0 to 9, transforming the vector of class integers into a binary matrix
+# For example, the nmber 4 should be represented as:
+#   [0,0,0,1,0,0,0,0,0,0]
 encoded_titles_train = np_utils.to_categorical(digits_titles_train, classes)
 print("Encoding categories train titles",  digits_titles_train.shape)
 
 encoded_titles_test = np_utils.to_categorical(digits_titles_test, classes)
 print("Encoding categories test titles",  digits_titles_test.shape)
+
+
+# Divide the training set into:
+#   Training Set (50,000)
+#   Cross-validation (10,000)
+#   Test Set (10,000)
 
 #Divide data
 digits_train = np.split(digits_train, [50000])
@@ -71,17 +84,11 @@ digits_train_cross = aux_train[1]
 encoded_titles_train = aux_titles_train[0]
 encoded_titles_train_cross = aux_titles_train[1]
 
-print("Test on ", len(digits_test))
 
-  # print the final input shape ready for training
-  #print("Train shape", digits_train.shape)
-  #print("Test shape", digits_test.shape)
-
-  # Categorize the title digit numbers using one-hot encoding from 0 to 9
-  # For example, the nmber 4 should be represented as:
-  #   [0,0,0,1,0,0,0,0,0,0]
-
-  # Encode categories from 0 to 9 using one-hot encoding
+# print the final input shape ready for training
+# print("Test on ", len(digits_test))
+# print("Train shape", digits_train.shape)
+# print("Test shape", digits_test.shape)
 
 if web:
   print("Training web model")
@@ -95,14 +102,10 @@ if web:
   scores = model.evaluate(digits_test, encoded_titles_test, verbose=verbose)
   print("Large CNN Error: %.2f%%" % (100-scores[1]*100))
 
-  print("Saving model for webapp")
-  model_save_path = "output"
-  tensorflowjs.converters.save_keras_model(model, model_save_path)
-
 else:
   print("Training CNN model")
   # Build the model
-  model = model(pixels, classes)
+  model = model(pixels, classes, dropout)
 
   # Train model with 20 epochs that updates every 200 images and a verbose of 2 is used to format and reduce the output line
   model_train = model.fit(digits_train, encoded_titles_train,
@@ -110,15 +113,19 @@ else:
   batch_size=batch_size, epochs=epochs, verbose=verbose)
 
 
+print("\nSaving model for webapp")
+model_save_path = "output"
+tensorflowjs.converters.save_keras_model(model, model_save_path)
+
 # training the model and saving metrics in history
-print("Saving model to calculate performance")
+print("\nSaving model to calculate performance")
 model_name = './keras_mnist.h5'
 model_path = os.path.join(model_name)
 model.save(model_path)
 
 trained_model = load_model('./keras_mnist.h5')
-print("Calculate performance")
-performance = trained_model.evaluate(digits_test, encoded_titles_test, verbose=verbose)
+print("\nCalculate performance")
+performance = model.evaluate(digits_test, encoded_titles_test, verbose=verbose)
 
 print("Create predictions based on tests")
 predictions = trained_model.predict_classes(digits_test)
@@ -129,6 +136,7 @@ print("\nSuccesses:", len(correct_indices))
 print("Errors:", len(incorrect_indices))
 
 #Performance measures
+print("Large CNN Error: %.2f%%" % (100-performance[1]*100))
 print("\nLoss: {0:.4f}".format(performance[0]))
 print("Accuracy: {0:.4f}".format(performance[1]))
 print("Error: {0:.4f}\n".format(1 - performance[1]))

@@ -16,16 +16,16 @@ import math
 
 
 # First layer in the Sequential Model
-def model(num_pixels, num_classes):
+def model(pixels, classes, dropout):
 	model = Sequential()
 
-	model.add(Dense(512, activation='relu', input_shape=(784,)))
-	model.add(Dropout(0.2))
+	model.add(Dense(512, activation='relu', input_shape=(pixels,)))
+	model.add(Dropout(dropout))
 
 	model.add(Dense(256, activation='relu'))
-	#model.add(Dropout(0.2))
+	model.add(Dropout(dropout))
 
-	model.add(Dense(10, activation='softmax'))
+	model.add(Dense(classes, activation='softmax'))
 
 
 	# Compile model
