@@ -80,14 +80,16 @@ function loadChart(label, data, modelSelected) {
 	        labels: label,
 	        datasets: [{
 	            label: modelSelected + " prediction",
-	            backgroundColor: '#f50057',
-	            borderColor: 'rgb(255, 99, 132)',
+	            backgroundColor: '#5198FF',
+	            borderColor: 'rgb(81, 152, 255)',
 	            data: data,
 	        }]
 	    },
 
 	    // Configuration options go here
-	    options: {}
+	    options: {
+			responsive:false
+		}
 	});
 }
 
